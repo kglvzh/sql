@@ -9,6 +9,17 @@
 ## Задание 2.1: Отчет о продажах с информацией о клиентах и товарах
 Выведите список продаж: имя клиента, модель товара, цена продажи, дата.
 
+Скрипт для вцыполнения запроса
+
+```sql
+select c.first_name, c.last_name, p.model, s.sales_amount, s.sales_transaction_date
+from sales s
+join customers c on s.customer_id = c.customer_id
+join products p on s.product_id = p.product_id
+where s.sales_transaction_date between '2019-01-01' and '2019-02-01'
+order by sales_transaction_date desc;
+```
+
 **Результат выполнения:**
 
 <img width="545" height="400" alt="image" src="https://github.com/user-attachments/assets/edaefc8f-770b-4c24-bf8f-ac5687380c50" />
@@ -17,6 +28,15 @@
 ## Задание 2.2: Товары дороже средней цены
 Найдите товары (products), цена которых выше средней цены всех товаров (подзапрос).
 
+Скрипт для вцыполнения запроса
+
+```sql
+select model, year, product_type, base_msrp
+from products
+where base_msrp > (select round(avg(base_msrp)::numeric, 2) from products)  -- округление для улучшения читаемости отчета
+order by base_msrp desc;
+```
+
 **Результат выполнения:**
 
 <img width="301" height="148" alt="image" src="https://github.com/user-attachments/assets/8c340c03-b3ef-4e5f-a72a-bcb01547259a" />
@@ -24,6 +44,20 @@
 
 ## Задание 2.3: Сезонность продаж
 Создайте столбец season на основе месяца продажи (sales_transaction_date): Winter, Spring, Summer, Autumn.
+
+Скрипт для вцыполнения запроса
+
+```sql
+select 
+    *,
+    case 
+        when extract(month from sales_transaction_date) in (12, 1, 2) then 'winter'
+        when extract(month from sales_transaction_date) in (3, 4, 5) then 'spring'
+        when extract(month from sales_transaction_date) in (6, 7, 8) then 'summer'
+        when extract(month from sales_transaction_date) in (9, 10, 11) then 'autumn'
+    end as season
+from sales;
+```
 
 **Результат выполнения:**
 
