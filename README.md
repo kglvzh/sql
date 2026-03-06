@@ -99,7 +99,9 @@
 <img width="240" height="91" alt="image" src="https://github.com/user-attachments/assets/9f7ec4a9-8b19-4c65-ac07-05bb472448cc" />
 
 ---
-Полный SQL скрипт для выполнения всех запросов представлен в файле sql_01.sql.
+
+Полный SQL скрипт для выполнения всех запросов представлен в файле [lab_01.sql.](sql_01.sql).
+
 ---
 
 # Вывод
