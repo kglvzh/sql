@@ -17,21 +17,18 @@
 
 ## Задание 4.1: Найти топ-3 самых дорогих товара (rank <= 3) в каждой товарной категории (product_type).
 
-Модернизация запроса: введенo дополнительное условие, так как без ниго в выгрузке 100000 записей, а с ним - 89066
-
 
 Скрипт для выволнения запроса:
 
 ```sql
-select 
-  first_name,
-  last_name,
-  state,
-  row_number() over (partition by state order by first_name) as rank
-from customers 
-where state is not null 
-order by 
-   state, rank
+select product_type, model, base_msrp, rank
+from (
+	select *, rank() over (partition by product_type order by base_msrp desc) as rank
+	from products
+)
+where rank <= 3
+order by product_type, rank;
+```
 
 Выполнение запроса представлено на скриншоте:
 
@@ -39,22 +36,22 @@ order by
 
 ---
 
-## Задание 4.2: Разделить все продукты на 10 ценовых категорий (NTILE) на основе base_msrp.
-
-
-Модернизация запроса: дабвлен DISTINCT, для пропуска повторений 
+## Задание 4.2: Разбить всех клиентов на 4 группы (NTILE) в зависимости от их широты (latitude) — от севера к югу.
 
 
 Скрипт для выволнения запроса:
 
+```
+select customer_id, latitude,
+ntile(4) over (order by latitude desc) as lat_group
+from customers
+where latitude is not null and state = 'OK'         -- фильтр по штату для региональной сегминтации клиентов
+order by latitude desc, customer_id;
+```
 
-select distinct -- добавлен тк некоторые модели повторялись
-   product_id,
-  product_type,
-  base_msrp,
-  ntile(10) over (order by base_msrp) as category
-from products
-order by category asc, base_msrp asc  -- по ценовой категории, а внутри этих групп по цене
+**Комментарий:**
+- **округление** для читаемости денежных значений
+- **сортировка** для приоритизации категорий с высоким разбросом цен
 
 
 Выполнение запроса представлено на скриншоте:
@@ -63,23 +60,20 @@ order by category asc, base_msrp asc  -- по ценовой категории,
 
 ---
 
-## Задание 4.3: Рассчитать минимум и максимум продаж (sales_amount) в скользящем окне (5 последних транзакций) для каждого дилера.
-
-Модернизация запроса: без дополнительных условия в выгрузке 33296 строк, а с условиями - 20
+## Задание 4.3: Рассчитать скользящую сумму продаж (3 дня: вчера, сегодня, завтра) для всей компании.
 
 Скрипт для выволнения запроса:
 
+```
 select 
-  dealership_id,
-  sales_transaction_date,
-  min(sales_amount) over (partition by dealership_id order by sales_transaction_date 
-rows between 4 preceding and current row ) as min_sales,
-  max(sales_amount) over (partition by dealership_id order by sales_transaction_date 
-rows between 4 preceding and current row ) as max_sales
+	sales_transaction_date::date as sales_date,      -- для группировки по дням без учёта времени
+	sum(sales_amount) as daily_total,
+	sum(sum(sales_amount)) over (order by sales_transaction_date::date range between interval '1' preceding and current row) as total     -- учитывает календарные интервалы, а не количество строк в выборке
 from sales
-where dealership_id is not null
-order by sales_transaction_date, min_sales
-limit 20
+where dealership_id is not null and sales_transaction_date between '2015-01-01' and '2015-12-31'
+group by sales_transaction_date::date
+order by sales_date;
+```
 
 Выполнение запроса представлено на скриншоте:
 
@@ -88,17 +82,7 @@ limit 20
 ---
 
 ## Выводы
-Научилась:
-- Применять оконные функции с использованием синтаксиса OVER(), PARTITION BY и ORDER BY
-- Использовать функции ранжирования ROW_NUMBER(), RANK(), DENSE_RANK() для нумерации строк внутри групп
-- Вычислять скользящие минимумы и максимумы с помощью оконных агрегатных функций
-- Настраивать границы окна через ROWS BETWEEN для работы с заданным количеством последних транзакций
 
-Рассмотрела:
-- Особенности работы оконных функций при фильтрации данных по датам
-- Разницу между ROWS BETWEEN 4 PRECEDING AND CURRENT ROW (5 строк) и другими вариантами окон
-- Применение агрегатных функций (MIN, MAX) в качестве оконных для анализа продаж по дилерам
-- Практический пример расчета минимальных и максимальных продаж в скользящем окне из 5 последних транзакций для каждого дилера
 
 Все задания выполнены в соответствии с вариантом.  
 Файл [lab_4.sql](lab_4.sql) содержит чистый код выполненных запросов.
