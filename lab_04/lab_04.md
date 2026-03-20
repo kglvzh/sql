@@ -30,9 +30,10 @@ where rank <= 3
 order by product_type, rank;
 ```
 
-Выполнение запроса представлено на скриншоте:
+Результат выполнения:
 
-<img width="450" height="671" alt="image" src="https://github.com/user-attachments/assets/c02a98db-03d5-4d61-ab22-8898eda2c81c" />
+<img width="359" height="155" alt="image" src="https://github.com/user-attachments/assets/c7b444af-062d-4864-81d2-8fcbe4114dec" />
+
 
 ---
 
@@ -53,10 +54,10 @@ order by latitude desc, customer_id;
 - **округление** для читаемости денежных значений
 - **сортировка** для приоритизации категорий с высоким разбросом цен
 
+Результат выполнения:
 
-Выполнение запроса представлено на скриншоте:
+<img width="293" height="377" alt="image" src="https://github.com/user-attachments/assets/78634d0e-ee98-4a67-b99c-61c19e1afddc" />
 
-<img width="498" height="481" alt="image" src="https://github.com/user-attachments/assets/13062e58-07ed-48fc-b279-8dce0c417a54" />
 
 ---
 
@@ -71,20 +72,23 @@ select
 	sum(sum(sales_amount)) over (order by sales_transaction_date::date range between interval '1' preceding and current row) as total     -- учитывает календарные интервалы, а не количество строк в выборке
 from sales
 where dealership_id is not null and sales_transaction_date between '2015-01-01' and '2015-12-31'
+									-- для фокусировки на конкретном отчётном периоде
 group by sales_transaction_date::date
 order by sales_date;
 ```
 
-Выполнение запроса представлено на скриншоте:
+**Комментарий:**
+- **округление** для читаемости денежных значений
+- **сортировка** для приоритизации категорий с высоким разбросом цен
 
-<img width="763" height="674" alt="image" src="https://github.com/user-attachments/assets/80e44b5a-0b2c-4efc-a925-e2c6e3be3870" />
+Результат выполнения:
+
+<img width="323" height="377" alt="image" src="https://github.com/user-attachments/assets/c43dffad-32ee-4bd9-8c84-56fe475c1148" />
+
 
 ---
 
-## Выводы
+## Вывод
 
 
-Все задания выполнены в соответствии с вариантом.  
-Файл [lab_4.sql](lab_4.sql) содержит чистый код выполненных запросов.
-
-```
+Полный SQL скрипт для выполнения запросов представлен в файле [lab_4.sql](lab_4.sql).
