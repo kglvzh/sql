@@ -18,7 +18,8 @@ order by latitude desc, customer_id;
 select 
 	sales_transaction_date::date as sales_date,      -- для группировки по дням без учёта времени
 	sum(sales_amount) as daily_total,
-	sum(sum(sales_amount)) over (order by sales_transaction_date::date range between interval '1' preceding and current row) as total     -- учитывает календарные интервалы, а не количество строк в выборке
+	sum(sum(sales_amount)) over (order by sales_transaction_date::date range between interval '1' preceding and current row) as total  
+	-- учитывает календарные интервалы, а не количество строк в выборке
 from sales
 where dealership_id is not null and sales_transaction_date between '2015-01-01' and '2015-12-31'
 group by sales_transaction_date::date
