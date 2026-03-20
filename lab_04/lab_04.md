@@ -42,7 +42,7 @@ order by product_type, rank;
 
 Скрипт для выволнения запроса:
 
-```
+```sql
 select customer_id, latitude,
 ntile(4) over (order by latitude desc) as lat_group
 from customers
@@ -65,7 +65,7 @@ order by latitude desc, customer_id;
 
 Скрипт для выволнения запроса:
 
-```
+```sql
 select 
 	sales_transaction_date::date as sales_date,      -- для группировки по дням без учёта времени
 	sum(sales_amount) as daily_total,
@@ -91,4 +91,4 @@ order by sales_date;
 ## Вывод
 
 
-Полный SQL скрипт для выполнения запросов представлен в файле [lab_4.sql](lab_4.sql).
+Полный SQL скрипт для выполнения запросов представлен в файле [lab_04.sql](lab_04.sql).
