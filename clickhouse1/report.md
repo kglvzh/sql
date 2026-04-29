@@ -174,6 +174,7 @@ SELECT * FROM products_var003 WHERE product_id IN (30, 34, 36);
 
 <img width="1755" height="248" alt="Снимок экрана 2026-04-29 104226" src="https://github.com/user-attachments/assets/ad2a5527-05d2-45b3-ad56-fb157905759a" />
 
+---
 
 Результат после принудительного слияния:
 
@@ -266,6 +267,8 @@ GROUP BY partition
 ORDER BY partition;
 ```
 
+---
+
 *5.2. JOIN между sales_var003 и products_var003*
 
 ```sql
@@ -284,6 +287,7 @@ LIMIT 5;
 
 <img width="396" height="106" alt="image" src="https://github.com/user-attachments/assets/577071cc-f382-4e7f-84f3-9236101b3a6f" />
 
+---
 
 *5.3. Структура (типы данных) всех трех таблиц*
 
@@ -307,6 +311,7 @@ DESCRIBE TABLE daily_metrics_var003;
 
 <img width="242" height="160" alt="image" src="https://github.com/user-attachments/assets/2248ff59-e202-4ad1-b595-b9c03879a636" />
 
+---
 
 *5.4. Запрос с массивом (Array(String))*
 
@@ -336,6 +341,8 @@ ORDER BY items_count DESC;
 Результат:
 
 <img width="260" height="144" alt="image" src="https://github.com/user-attachments/assets/109c6ffc-1a47-4424-ad63-e2dae114db3a" />
+
+---
 
 *5.5. Контрольная сумма*
 
